@@ -1,0 +1,690 @@
+{
+    "title": "EICV7 priority-file structural report",
+    "created": "2026-10-02",
+    "source_inventory": "data/processed/eicv7_metadata_inventory.json",
+    "method": {
+        "metadata": "Used pyreadstat metadata-only inspection for labels and value-label dictionaries.",
+        "record_grain_checks": "Read only selected ID/item columns, one file at a time, to test uniqueness and overlap; no complete dataset was loaded.",
+        "raw_data_modified": false,
+        "finscope_included_or_merged": false,
+        "merge_performed": false
+    },
+    "shared_structure": {
+        "household_id_candidate": {
+            "variable": "hhid",
+            "label": "Household Identification",
+            "evidence": "Unique and nonmissing in both household-shaped files (15,054 rows each). Each priority file contains the same 15,054 distinct hhid values; hhid repeats in person and item/transaction files.",
+            "assessment": "Strong internal household-key candidate; uniqueness is grain-dependent and this is not a merge authorization."
+        },
+        "person_id_candidate": {
+            "composite": [
+                "hhid",
+                "pid"
+            ],
+            "evidence": "The person roster has 62,110 nonmissing, unique hhid-pid pairs. pid alone takes only 16 values (1-16), so it is a within-household member number, not a project-wide unique ID.",
+            "related_file_checks": {
+                "CS_S9D5_Financial_Services.dta": "333 nonmissing hhid-pid pairs; all 333 match the person roster. The other 14,721 pid values are missing.",
+                "CS_S10A1_A2_credits.dta": "12,639 distinct nonmissing hhid-pid pairs; all match the person roster. No orphan member rows among the checked nonmissing pairs.",
+                "CS_S10C_Savings.dta": "27,348 distinct nonmissing hhid-pid pairs; 27,347 match the person roster and one does not. Investigate before relying on this link."
+            },
+            "assessment": "Strong within-EICV7 member-link candidate based on labels and observed key matches; confirm identifiers and file relationships in survey documentation before joining."
+        },
+        "cluster_candidate": {
+            "variable": "clust",
+            "label": "Clust",
+            "assessment": "Likely survey cluster/PSU identifier based on name and presence across all seven files; confirm its design role from survey documentation."
+        },
+        "geographic_fields": {
+            "province": "Province code; value labels identify the five provinces.",
+            "district": "District code; value labels identify districts.",
+            "ur": "Area of residence; 1=Urban, 2=Rural."
+        },
+        "survey_design_fields": {
+            "weight": "Labelled Household Weight; present in all seven files.",
+            "pop_wt": "Labelled Population Weight; present in the poverty and household files only.",
+            "strata_id": "Present in the household, person, access, financial-services, credits, and savings files; absent from the poverty file.",
+            "caution": "Weights repeat on person/item/transaction rows. Do not treat a repeated household weight as a row-level weight or select a weighting strategy before confirming the survey design and analysis unit."
+        },
+        "poverty_fields_repeated_across_files": {
+            "variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "caution": "These outcome-like fields are present in all seven priority files, not just the poverty file. Their presence in a joined table creates direct leakage risk for poverty targets."
+        }
+    },
+    "code_labels": {
+        "province": {
+            "1": "Kigali City",
+            "2": "Southern Province",
+            "3": "Western Province",
+            "4": "Northern Province",
+            "5": "Eastern Province"
+        },
+        "district": {
+            "11": "Nyarugenge",
+            "12": "Gasabo",
+            "13": "Kicukiro",
+            "21": "Nyanza",
+            "22": "Gisagara",
+            "23": "Nyaruguru",
+            "24": "Huye",
+            "25": "Nyamagabe",
+            "26": "Ruhango",
+            "27": "Muhanga",
+            "28": "Kamonyi",
+            "31": "Karongi",
+            "32": "Rutsiro",
+            "33": "Rubavu",
+            "34": "Nyabihu",
+            "35": "Ngororero",
+            "36": "Rusizi",
+            "37": "Nyamasheke",
+            "41": "Rulindo",
+            "42": "Gakenke",
+            "43": "Musanze",
+            "44": "Burera",
+            "45": "Gicumbi",
+            "51": "Rwamagana",
+            "52": "Nyagatare",
+            "53": "Gatsibo",
+            "54": "Kayonza",
+            "55": "Kirehe",
+            "56": "Ngoma",
+            "57": "Bugesera"
+        },
+        "ur": {
+            "1": "Urban",
+            "2": "Rural"
+        },
+        "quintile": {
+            "1": "Poor",
+            "2": "Poor/mid",
+            "3": "Mid",
+            "4": "Mid/upper",
+            "5": "Upper"
+        },
+        "pov_jan": {
+            "0": "Non Poor",
+            "100": "Poor"
+        },
+        "poverty": {
+            "1": "Severaly Poor",
+            "2": "Moderately poor",
+            "3": "Non Poor"
+        },
+        "epov_jan": {
+            "0": "Non Extreme Poor",
+            "100": "Extreme Poor"
+        },
+        "s1q1": {
+            "1": "Male",
+            "2": "Female"
+        },
+        "s1q2": {
+            "1": "Household head",
+            "2": "Spouse of household head",
+            "3": "Son or daughter of household head",
+            "4": "Step/adopted/foster child",
+            "5": "Parent",
+            "6": "Brother or sister",
+            "7": "Grandchild",
+            "8": "Parent-in-law",
+            "9": "Brother or sister-in-law",
+            "10": "Nephew/niece",
+            "11": "Other relationship",
+            "12": "Waged domestic worker",
+            "13": "No relationship",
+            "14": "Unknown relationship"
+        },
+        "s1q14": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s4bq23c": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s5fq0": {
+            "1": "Main drinking/clean water source",
+            "2": "Food market/shop",
+            "3": "Market for selling farm produce",
+            "4": "Public transport stage",
+            "5": "All-weather roads",
+            "6": "Pre-primary",
+            "7": "Primary schools",
+            "8": "Secondary schools",
+            "9": "District hospital",
+            "10": "Health centre",
+            "11": "Health post",
+            "12": "Sector office",
+            "13": "Cellule office",
+            "14": "Internet services",
+            "15": "Secretarial services"
+        },
+        "s5fq1": {
+            "1": "Not at all",
+            "2": "Sometimes",
+            "3": "Often",
+            "4": "Regularly",
+            "5": "Not aware of service"
+        },
+        "s5fq5": {
+            "1": "Foot",
+            "2": "Bicycle",
+            "3": "Motorcycle",
+            "4": "Vehicle",
+            "5": "Minibus",
+            "6": "Boat/Pirogue",
+            "9": "Other"
+        },
+        "s5fq6": {
+            "1": "Satisfied",
+            "2": "Not satisfied"
+        },
+        "s5fq7": {
+            "1": "Declining",
+            "2": "Same",
+            "3": "Improving",
+            "4": "Don't know"
+        },
+        "s9d5q1": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s9d5q2": {
+            "1": "Yes",
+            "2": "No",
+            "3": "Still waiting"
+        },
+        "s9d5q3": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s9d5q5": {
+            "1": "Individual",
+            "2": "Cooperative",
+            "3": "Group"
+        },
+        "s9d5q6_and_s9d5q7": {
+            "1": "Investment in farming",
+            "2": "Buy livestock",
+            "3": "Poultry keeping",
+            "4": "Business/trade",
+            "5": "Handcraft",
+            "6": "Other"
+        },
+        "s10aq1_and_s10aq3": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s10aq2": {
+            "1": "Insufficient income",
+            "2": "Insufficient collateral",
+            "3": "Debt-history problems",
+            "4": "Unclear loan purpose",
+            "5": "Other reasons"
+        },
+        "s10aq6": {
+            "1": "Employer loan",
+            "2": "Commercial bank",
+            "3": "Relative",
+            "4": "Credit cooperative",
+            "5": "Tontine/community",
+            "6": "Informal lenders",
+            "7": "Microfinance",
+            "8": "VUP financial service loan",
+            "9": "SACCOs",
+            "10": "Mokash",
+            "11": "Commercial institutions/business",
+            "12": "Other"
+        },
+        "s10aq7": {
+            "1": "Agricultural equipment",
+            "2": "Agricultural inputs",
+            "3": "Business expansion",
+            "4": "Home improvement",
+            "5": "Education",
+            "6": "Medical treatment",
+            "7": "Ceremonial expenses",
+            "8": "Household items",
+            "9": "Livestock purchase",
+            "10": "Food purchase",
+            "11": "Other"
+        },
+        "s10aq8": {
+            "1": "Land",
+            "2": "Animals",
+            "3": "House",
+            "4": "None",
+            "5": "Other"
+        },
+        "s10aq9": {
+            "1": "Yes, all",
+            "2": "Yes, part",
+            "3": "No"
+        },
+        "s10cq1_and_s10cq4_and_s10cq7_and_s10cq8": {
+            "1": "Yes",
+            "2": "No"
+        },
+        "s10cq5": {
+            "1": "Commercial bank",
+            "2": "Microfinance",
+            "3": "Cooperative bank",
+            "4": "SACCO",
+            "5": "Momo",
+            "6": "Mokash",
+            "7": "Other"
+        },
+        "s10cq6": {
+            "1": "Current account",
+            "2": "Savings account"
+        }
+    },
+    "files": [
+        {
+            "filename": "CS_EICV7_poverty_file.dta",
+            "observations": 15054,
+            "variable_count": 32,
+            "likely_grain": "Household",
+            "grain_evidence": "hhid is nonmissing and unique for all 15,054 rows; its household-ID set matches the other six priority files.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "pop_wt"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan",
+                "Poverty_line",
+                "Extreme_line"
+            ],
+            "poverty_measure_inputs_or_derivatives": [
+                "sol_jan",
+                "cons1",
+                "cons1ae",
+                "food",
+                "exp1-exp11",
+                "Poverty_line",
+                "Extreme_line"
+            ],
+            "financial_service_variables": [],
+            "savings_variables": [],
+            "credit_variables": [],
+            "relation_to_other_files": "Household-level outcome/consumption table; shares the full hhid universe with the household file and all other priority files."
+        },
+        {
+            "filename": "CS_S01_S5_S7_Household.dta",
+            "observations": 15054,
+            "variable_count": 112,
+            "likely_grain": "Household",
+            "grain_evidence": "hhid is nonmissing and unique for all 15,054 rows; exact hhid set match with the poverty file and other priority files.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "pop_wt",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "financial_service_variables": [],
+            "savings_variables": [],
+            "credit_variables": [],
+            "relation_to_other_files": "Household-level questionnaire content; this file's unique hhid roster is the internal reference used for the ID coverage checks."
+        },
+        {
+            "filename": "CS_S0_S1_S2_S3_S4_S6A_S6B_S6C_Person.dta",
+            "observations": 62110,
+            "variable_count": 157,
+            "likely_grain": "Person/household-member",
+            "grain_evidence": "62,110 unique, nonmissing (hhid,pid) pairs across 15,054 households; pid alone repeats as member numbers 1-16.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [
+                    "hhid",
+                    "pid"
+                ],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "person_and_demographic_variables": [
+                "pid (Person ID Number(EICV7))",
+                "s1q1 (Sex)",
+                "s1q2 (Relation with the head of household)",
+                "s1q3y (Age in years)",
+                "s1q14 (Household membership)"
+            ],
+            "financial_service_variables": [
+                "s4bq8 (Has a mobile telephone)",
+                "s4bq23a (USSD access)",
+                "s4bq23b (application-based access)",
+                "s4bq23c (uses mobile financial services: MOMO/Airtel Money/Mocash/push and pull)"
+            ],
+            "savings_variables": [],
+            "credit_variables": [],
+            "relation_to_other_files": "The roster is the person-link candidate for nonmissing hhid-pid references in the financial-services, credit, and savings files."
+        },
+        {
+            "filename": "CS_S5F_access_to_services.dta",
+            "observations": 225810,
+            "variable_count": 22,
+            "likely_grain": "Household-by-basic-service item",
+            "grain_evidence": "15,054 households x 15 service codes = 225,810 rows; all 15 codes occur and there are no duplicate hhid-s5fq0 pairs.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [],
+                "item": [
+                    "s5fq0 (Id Basic service)"
+                ],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "service_variables": [
+                "s5fq0 (service type)",
+                "s5fq0d (service description)",
+                "s5fq1 (frequency of use)",
+                "s5fq2 (reason little/not used)",
+                "s5fq3a/s5fq3b (travel time)",
+                "s5fq4 (distance)",
+                "s5fq5 (transport mode)",
+                "s5fq6 (satisfaction)",
+                "s5fq7 (quality trend)",
+                "s5fq8 (VUP public-works result)"
+            ],
+            "financial_service_variables": [],
+            "savings_variables": [],
+            "credit_variables": [],
+            "relation_to_other_files": "Household IDs cover the same 15,054 households, but each household expands to one record for each of 15 basic-service categories."
+        },
+        {
+            "filename": "CS_S9D5_Financial_Services.dta",
+            "observations": 15054,
+            "variable_count": 23,
+            "likely_grain": "Household-level VUP financial-service module, with sparse member reference",
+            "grain_evidence": "One row per unique hhid. pid is labelled ID HH Member but is nonmissing in only 333 rows; all 333 hhid-pid pairs match the person roster.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [
+                    "pid, labelled ID HH Member; sparse member-reference candidate"
+                ],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "financial_service_variables": [
+                "s9d1q1/s9d1q2 (VUP beneficiaries: financial component/direct support)",
+                "s9d5q1 (household ever applied for financial-service loan)",
+                "s9d5q2m/s9d5q2y (joining month/year)",
+                "s9d5q2 (loan approval)",
+                "s9d5q3 (amount received as requested)",
+                "s9d5q4 (amount received)",
+                "s9d5q5 (loan arrangement type)",
+                "s9d5q6/s9d5q7 (planned project activity)"
+            ],
+            "savings_variables": [],
+            "credit_variables": [
+                "s9d5q1-s9d5q7 (VUP financial-service loan application/approval and details)"
+            ],
+            "relation_to_other_files": "Same household roster. Sparse pid references match roster pairs where present; do not treat pid as the row key."
+        },
+        {
+            "filename": "CS_S10A1_A2_credits.dta",
+            "observations": 20509,
+            "variable_count": 20,
+            "likely_grain": "Household/member/loan record, with screening or no-loan rows possible",
+            "grain_evidence": "15,054 distinct hhid values; 12,639 distinct nonmissing hhid-pid pairs all match the person roster. Candidate (hhid,pid,s10aq4) has no duplicate rows. 4,739 rows have both pid and s10aq4 missing.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [
+                    "pid (Loan recipient Id Number)"
+                ],
+                "loan_or_event": [
+                    "s10aq4 (Loan Id Number)"
+                ],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "financial_service_variables": [],
+            "savings_variables": [],
+            "credit_variables": [
+                "s10aq1 (member tried to obtain a loan)",
+                "s10aq2 (reason loan denied)",
+                "s10aq3 (household members owe money)",
+                "s10aq4 (loan ID)",
+                "s10aq6 (loan source)",
+                "s10aq7 (purpose)",
+                "s10aq8 (collateral/property required)",
+                "s10aq9 (repayment status)"
+            ],
+            "relation_to_other_files": "Household IDs match the roster; nonmissing member references match the person file. Multiple rows per household and the loan ID field suggest loan/member records, while blank member/loan IDs indicate a screening or non-loan record type that needs questionnaire documentation."
+        },
+        {
+            "filename": "CS_S10C_Savings.dta",
+            "observations": 43810,
+            "variable_count": 19,
+            "likely_grain": "Household/member/account record",
+            "grain_evidence": "15,054 distinct hhid values. Candidate (hhid,pid,s10cq3) has no duplicate rows; pid is missing in 753 rows and account ID s10cq3 is missing in 6. One distinct nonmissing hhid-pid pair does not match the person roster.",
+            "identifier_candidates": {
+                "household": [
+                    "hhid"
+                ],
+                "person": [
+                    "pid (ID number of person saving)"
+                ],
+                "account_or_item": [
+                    "s10cq3 (Id Number of account)"
+                ],
+                "cluster": [
+                    "clust"
+                ],
+                "geography": [
+                    "province",
+                    "district",
+                    "ur"
+                ]
+            },
+            "survey_design_fields": [
+                "weight",
+                "strata_id"
+            ],
+            "poverty_variables": [
+                "quintile",
+                "pov_jan",
+                "poverty",
+                "epov_jan"
+            ],
+            "financial_service_variables": [],
+            "savings_variables": [
+                "s10cq1 (ownership of bank account/financial institution/Momo/Tontine)",
+                "s10cq3 (account ID)",
+                "s10cq4 (has bank/Momo account)",
+                "s10cq5 (institution)",
+                "s10cq6 (account type)",
+                "s10cq7 (interest-bearing)",
+                "s10cq8 (participates in tontine)"
+            ],
+            "credit_variables": [],
+            "relation_to_other_files": "Household IDs match the roster and most member references match the person file. The single unmatched hhid-pid pair is unresolved; the candidate account/member composite needs codebook confirmation."
+        }
+    ],
+    "relational_assessment": {
+        "household_primary_key_candidate": "hhid; verified unique at household grain in the poverty and household files, and common across the full household universe in all seven files.",
+        "person_member_key_candidate": "(hhid,pid); verified unique in the person roster. pid is not globally unique and should not be used alone.",
+        "household_level_files": [
+            "CS_EICV7_poverty_file.dta",
+            "CS_S01_S5_S7_Household.dta",
+            "CS_S9D5_Financial_Services.dta"
+        ],
+        "person_level_files": [
+            "CS_S0_S1_S2_S3_S4_S6A_S6B_S6C_Person.dta"
+        ],
+        "item_or_transaction_level_files": [
+            "CS_S5F_access_to_services.dta (15 household-service items per household)",
+            "CS_S10A1_A2_credits.dta (member/loan records plus rows with missing member/loan IDs)",
+            "CS_S10C_Savings.dta (member/account records)"
+        ],
+        "linkage_status": "Within-EICV7 hhid coverage is identical across these files; member pair checks support internal roster references. No merge was performed. This says nothing about record-level linkage to FinScope."
+    },
+    "candidate_targets_not_selected": [
+        {
+            "variable": "poverty.poverty",
+            "meaning": "Welfare Categories: severely poor, moderately poor, non-poor",
+            "unit": "household",
+            "caution": "Derived welfare classification; direct consumption components are present."
+        },
+        {
+            "variable": "poverty.pov_jan / epov_jan",
+            "meaning": "Poor/non-poor and extreme-poor/non-extreme-poor indicators coded 0/100",
+            "unit": "household",
+            "caution": "Alternative direct encodings of poverty outcomes."
+        },
+        {
+            "variable": "quintile",
+            "meaning": "Quintile of real consumption per adult equivalent",
+            "unit": "household",
+            "caution": "Consumption-derived ordinal outcome, not an independent predictor for poverty."
+        },
+        {
+            "variable": "person.s4bq23c",
+            "meaning": "Use of mobile financial services (MOMO/Airtel Money/Mocash/push and pull), Yes/No",
+            "unit": "person",
+            "caution": "A possible narrow financial-use outcome; not equivalent to a complete financial-inclusion definition."
+        },
+        {
+            "variable": "savings.s10cq1 / s10cq4",
+            "meaning": "Account/financial-instrument ownership or having a bank/Momo account, Yes/No",
+            "unit": "person/account record; confirm questionnaire universe",
+            "caution": "Closely overlapping account-ownership measures; define the construct before choosing either."
+        },
+        {
+            "variable": "financial_services.s9d5q2",
+            "meaning": "Approval of a VUP financial-service loan: Yes/No/Still waiting",
+            "unit": "household/application context",
+            "caution": "Specific program and application subset, not general financial inclusion."
+        },
+        {
+            "variable": "credits.s10aq1 / s10aq3",
+            "meaning": "Tried to obtain a loan / household members owe money, Yes/No",
+            "unit": "member or household context; confirm questionnaire universe",
+            "caution": "Distinct credit-access/debt constructs."
+        }
+    ],
+    "leakage_and_interpretation_risks": [
+        "For poverty outcomes, exclude poverty labels copied into other files (poverty, pov_jan, epov_jan, quintile) and direct construction/derivative variables such as cons1, cons1ae, sol_jan, food, exp1-exp11, and poverty lines unless the task is explicitly descriptive rather than predictive.",
+        "For account-ownership targets, s10cq1 and s10cq4 overlap with the target concept; institution, account type, interest, and tontine fields may define or occur downstream of ownership. Do not use them without a target-specific leakage review.",
+        "For s9d5q2 loan approval, s9d5q3-s9d5q7 describe receipt and approved-loan details and are post-application/outcome candidates for leakage. Their timing and questionnaire skip logic need confirmation.",
+        "Person, service, credit, and savings files repeat household-level poverty fields and weights across rows. Joining them can duplicate household labels/weights and change the analytical unit or class balance.",
+        "The code labels provide category meanings, but survey documentation is still needed to confirm skip patterns, sampling/weight use, cluster/strata definitions, and intended key semantics."
+    ],
+    "open_checks_before_constructing_an_analytical_table": [
+        "Confirm hhid/pid/account/loan key definitions and questionnaire universes in the EICV7 codebook; investigate the one unmatched savings hhid-pid pair.",
+        "Confirm the design role and intended use of weight, pop_wt, strata_id, and clust for each analysis unit.",
+        "Confirm whether repeated poverty/weight fields are supplied for convenience or generated at a particular household/person grain before selecting source tables."
+    ]
+}

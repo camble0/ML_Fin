@@ -1,0 +1,977 @@
+{
+  "title": "Initial EICV7 household financial-inclusion dataset",
+  "source_structure_report": "data/processed/eicv7_priority_structure.json",
+  "target": {
+    "name": "hh_has_bank_or_momo_account",
+    "definition": "At least one household member has a bank or Momo account.",
+    "source": "CS_S10C_Savings.dta: s10cq4 (Yes=1, No=2), aggregated by hhid.",
+    "derivation": "Target Yes if any s10cq4 response is Yes; otherwise No if any s10cq4 response is No. If s10cq4 is entirely unanswered and s10cq1 is exclusively No, record a structural No. Other unresolved cases remain missing.",
+    "structural_no_assumption": "In the observed data, all 753 households with no s10cq4 response have s10cq1=No; s10cq1 is labelled ownership of bank account/financial institution/Momo/Tontine. This skip interpretation is explicit and should be confirmed against the questionnaire.",
+    "household_source_status_counts": {
+      "direct_s10cq4_yes": 13332,
+      "direct_s10cq4_no": 969,
+      "structural_no_from_s10cq1": 753
+    },
+    "distribution": {
+      "yes": {
+        "count": 13332,
+        "fraction_of_households": 0.885611797528896
+      },
+      "no": {
+        "count": 1722,
+        "fraction_of_households": 0.11438820247110403
+      },
+      "unresolved_missing": {
+        "count": 0,
+        "fraction_of_households": 0.0
+      },
+      "resolved_households": 15054
+    },
+    "q4_conflicting_response_households": 2347,
+    "q4_conflict_rule": "A household with both Yes and No account rows is positive if any member/account row is Yes; conflict count remains available for audit and is excluded from predictors.",
+    "alternatives_not_selected": [
+      "s10cq1 is broader and yielded 14,301 Yes versus 753 No households, making it less discriminating.",
+      "s9d5q1/s9d5q2 describe VUP financial-service loan application/approval and are missing for 14,721 of 15,054 households; they are too program-specific and sparse for the first general inclusion target.",
+      "s10aq1/s10aq3 describe loan-seeking and debt, not account access. They are retained only as distinct aggregated predictors."
+    ]
+  },
+  "number_of_households": 15054,
+  "number_of_features": 28,
+  "model_predictor_columns": [
+    "province_code",
+    "district_code",
+    "urban_rural_code",
+    "consumption_quintile",
+    "dwelling_type_code",
+    "dwelling_owner_code",
+    "owns_residential_house",
+    "drinking_water_source_code",
+    "electricity_grid_connected",
+    "internet_at_home",
+    "toilet_type_code",
+    "any_livestock",
+    "resident_member_count",
+    "mean_resident_age_years",
+    "share_female_residents",
+    "share_residents_age_15_64",
+    "share_residents_ever_attended_school",
+    "share_residents_with_mobile_phone",
+    "share_residents_using_internet",
+    "share_residents_worked_own_farm",
+    "share_residents_worked_nonfarm_wage",
+    "share_residents_running_nonfarm_business",
+    "access_service_use_often_share",
+    "access_service_satisfied_share",
+    "access_service_improving_share",
+    "access_median_travel_time_minutes",
+    "household_any_loan_attempt",
+    "household_any_member_owes_money"
+  ],
+  "categorical_predictors": [
+    "province_code",
+    "district_code",
+    "urban_rural_code",
+    "consumption_quintile",
+    "dwelling_type_code",
+    "dwelling_owner_code",
+    "owns_residential_house",
+    "drinking_water_source_code",
+    "electricity_grid_connected",
+    "internet_at_home",
+    "toilet_type_code",
+    "any_livestock"
+  ],
+  "numeric_predictors": [
+    "resident_member_count",
+    "mean_resident_age_years",
+    "share_female_residents",
+    "share_residents_age_15_64",
+    "share_residents_ever_attended_school",
+    "share_residents_with_mobile_phone",
+    "share_residents_using_internet",
+    "share_residents_worked_own_farm",
+    "share_residents_worked_nonfarm_wage",
+    "share_residents_running_nonfarm_business",
+    "access_service_use_often_share",
+    "access_service_satisfied_share",
+    "access_service_improving_share",
+    "access_median_travel_time_minutes",
+    "household_any_loan_attempt",
+    "household_any_member_owes_money"
+  ],
+  "source_files": [
+    {
+      "filename": "CS_S01_S5_S7_Household.dta",
+      "purpose": "Base household context, design fields, dwelling, utilities, and quintile.",
+      "source_rows": 15054,
+      "source_households": 15054,
+      "rows_missing_hhid": 0,
+      "coverage_against_household_base": {
+        "base_households_without_source_rows": 0,
+        "source_households_outside_base": 0
+      }
+    },
+    {
+      "filename": "CS_S0_S1_S2_S3_S4_S6A_S6B_S6C_Person.dta",
+      "purpose": "Resident-member demographics, education, digital access, and selected work indicators.",
+      "source_rows": 62110,
+      "rows_missing_hhid": 0,
+      "rows_missing_membership_code": 0,
+      "resident_rows_used": 62110,
+      "households_with_resident_records": 15054,
+      "coverage_against_household_base": {
+        "base_households_without_source_rows": 0,
+        "source_households_outside_base": 0
+      }
+    },
+    {
+      "filename": "CS_S5F_access_to_services.dta",
+      "purpose": "Household-level aggregates over basic-service items.",
+      "source_rows": 225810,
+      "rows_missing_hhid": 0,
+      "households_with_access_records": 15054,
+      "rows_with_both_travel_time_components": 158689,
+      "coverage_against_household_base": {
+        "base_households_without_source_rows": 0,
+        "source_households_outside_base": 0
+      }
+    },
+    {
+      "filename": "CS_S10A1_A2_credits.dta",
+      "purpose": "Household aggregates of loan-seeking and debt responses.",
+      "source_rows": 20509,
+      "rows_missing_hhid": 0,
+      "rows_missing_both_member_and_loan_id": 4739,
+      "households_with_credit_records": 15054,
+      "coverage_against_household_base": {
+        "base_households_without_source_rows": 0,
+        "source_households_outside_base": 0
+      }
+    },
+    {
+      "filename": "CS_S10C_Savings.dta",
+      "purpose": "Household target and target-source provenance.",
+      "source_rows": 43810,
+      "rows_missing_hhid": 0,
+      "households_with_savings_records": 15054,
+      "source_q4_observations": 43057,
+      "households_with_conflicting_q4_responses": 2347,
+      "unknown_nonmissing_s10cq4_codes": [],
+      "coverage_against_household_base": {
+        "base_households_without_source_rows": 0,
+        "source_households_outside_base": 0
+      }
+    }
+  ],
+  "feature_transformations": [
+    {
+      "group": "household_context",
+      "source_file": "CS_S01_S5_S7_Household.dta",
+      "transformations": [
+        {
+          "original_variables": [
+            "province",
+            "district",
+            "ur",
+            "quintile"
+          ],
+          "resulting_features": [
+            "province_code",
+            "district_code",
+            "urban_rural_code",
+            "consumption_quintile"
+          ],
+          "transformation": "Retain Stata codes as categorical values; one-hot encode in the model."
+        },
+        {
+          "original_variables": [
+            "s5aq2",
+            "s5aq7",
+            "s5bq6",
+            "s5cq3",
+            "s5cq14",
+            "s5cq20a",
+            "s5cq25",
+            "s7aq4"
+          ],
+          "resulting_features": [
+            "dwelling_type_code",
+            "dwelling_owner_code",
+            "owns_residential_house",
+            "drinking_water_source_code",
+            "electricity_grid_connected",
+            "internet_at_home",
+            "toilet_type_code",
+            "any_livestock"
+          ],
+          "transformation": "Retain interpretable dwelling, ownership, water, electricity, internet, toilet, and livestock response codes as categorical values."
+        },
+        {
+          "original_variables": [
+            "hhid",
+            "clust",
+            "strata_id",
+            "weight",
+            "pop_wt"
+          ],
+          "resulting_features": [
+            "hhid",
+            "clust",
+            "strata_id",
+            "weight",
+            "pop_wt"
+          ],
+          "transformation": "Preserve identifiers/design fields in the table; never include these as model predictors. clust is used only for grouped splitting."
+        }
+      ]
+    },
+    {
+      "group": "person_demographics_education_digital_work",
+      "source_file": "CS_S0_S1_S2_S3_S4_S6A_S6B_S6C_Person.dta",
+      "filter": "Keep rows with s1q14=1 (household membership Yes), then aggregate by hhid.",
+      "transformations": [
+        {
+          "original_variables": [
+            "pid"
+          ],
+          "resulting_features": [
+            "resident_member_count"
+          ],
+          "transformation": "Count nonmissing resident person IDs per household."
+        },
+        {
+          "original_variables": [
+            "s1q3y"
+          ],
+          "resulting_features": [
+            "mean_resident_age_years",
+            "share_residents_age_15_64"
+          ],
+          "transformation": "Mean age and share aged 15-64 among members with age observed."
+        },
+        {
+          "original_variables": [
+            "s1q1"
+          ],
+          "resulting_features": [
+            "share_female_residents"
+          ],
+          "transformation": "Fraction of known sex responses coded Female (2)."
+        },
+        {
+          "original_variables": [
+            "s4aq1",
+            "s4bq8",
+            "s4bq15"
+          ],
+          "resulting_features": [
+            "share_residents_ever_attended_school",
+            "share_residents_with_mobile_phone",
+            "share_residents_using_internet"
+          ],
+          "transformation": "Within-household share of valid Yes (1) responses; denominator is nonmissing Yes/No responses."
+        },
+        {
+          "original_variables": [
+            "s6aq2",
+            "s6aq5",
+            "s6aq6"
+          ],
+          "resulting_features": [
+            "share_residents_worked_own_farm",
+            "share_residents_worked_nonfarm_wage",
+            "share_residents_running_nonfarm_business"
+          ],
+          "transformation": "Within-household share of valid Yes (1) responses for each activity."
+        }
+      ]
+    },
+    {
+      "group": "basic_service_access",
+      "source_file": "CS_S5F_access_to_services.dta",
+      "transformations": [
+        {
+          "original_variables": [
+            "s5fq1"
+          ],
+          "resulting_features": [
+            "access_service_use_often_share"
+          ],
+          "transformation": "Share of valid service items coded Often (3) or Regularly (4)."
+        },
+        {
+          "original_variables": [
+            "s5fq6",
+            "s5fq7"
+          ],
+          "resulting_features": [
+            "access_service_satisfied_share",
+            "access_service_improving_share"
+          ],
+          "transformation": "Share of valid items coded Satisfied (1) and Improving (3), respectively."
+        },
+        {
+          "original_variables": [
+            "s5fq3a",
+            "s5fq3b"
+          ],
+          "resulting_features": [
+            "access_median_travel_time_minutes"
+          ],
+          "transformation": "Convert hours*60 + minutes only where both source components are present, then take household median."
+        },
+        {
+          "original_variables": [
+            "s5fq1"
+          ],
+          "resulting_features": [
+            "access_service_item_count"
+          ],
+          "transformation": "Retain observed item count as a data-quality field; exclude from predictors."
+        }
+      ]
+    },
+    {
+      "group": "credit_context",
+      "source_file": "CS_S10A1_A2_credits.dta",
+      "transformations": [
+        {
+          "original_variables": [
+            "s10aq1"
+          ],
+          "resulting_features": [
+            "household_any_loan_attempt"
+          ],
+          "transformation": "Per hhid, 1 if any valid row is Yes; 0 if valid responses exist and none is Yes; otherwise missing."
+        },
+        {
+          "original_variables": [
+            "s10aq3"
+          ],
+          "resulting_features": [
+            "household_any_member_owes_money"
+          ],
+          "transformation": "Per hhid, 1 if any valid row is Yes; 0 if valid responses exist and none is Yes; otherwise missing."
+        },
+        {
+          "original_variables": [
+            "pid",
+            "s10aq4"
+          ],
+          "resulting_features": [
+            "credit_id_missing_row_count"
+          ],
+          "transformation": "Count records where both member and loan IDs are missing; retain responses by hhid and exclude this diagnostic count from predictors."
+        }
+      ]
+    },
+    {
+      "group": "financial_inclusion_target",
+      "source_file": "CS_S10C_Savings.dta",
+      "transformations": [
+        {
+          "original_variables": [
+            "s10cq4",
+            "s10cq1"
+          ],
+          "resulting_features": [
+            "hh_has_bank_or_momo_account",
+            "target_source_status",
+            "target_s10cq4_conflict"
+          ],
+          "transformation": "Use any s10cq4 Yes as household Yes; otherwise any s10cq4 No as No; if q4 is entirely unanswered and q1 is exclusively No, mark a structural No and label its source. Leave remaining unresolved cases missing. Mark households with both q4 codes for audit."
+        }
+      ]
+    }
+  ],
+  "excluded_from_predictors": [
+    {
+      "variables": [
+        "s10cq1",
+        "s10cq4"
+      ],
+      "reason": "Direct target construction/source-screen questions; target provenance and conflict flags are also excluded."
+    },
+    {
+      "variables": [
+        "s10cq3",
+        "s10cq5",
+        "s10cq6",
+        "s10cq7",
+        "s10cq8",
+        "pid"
+      ],
+      "reason": "Account IDs or account/tontine details from the target module; not loaded as predictors to avoid target-adjacent leakage."
+    },
+    {
+      "variables": [
+        "hhid",
+        "clust",
+        "strata_id",
+        "weight",
+        "pop_wt"
+      ],
+      "reason": "Identifiers, split groups, and preserved survey-design fields; not model predictors."
+    },
+    {
+      "variables": [
+        "s10aq2",
+        "s10aq4",
+        "s10aq6",
+        "s10aq7",
+        "s10aq8",
+        "s10aq9"
+      ],
+      "reason": "Loan denial/source/purpose/collateral/repayment details are excluded from the initial feature set; several are conditional or post-loan details."
+    },
+    {
+      "variables": [
+        "s9d5q1-s9d5q7"
+      ],
+      "reason": "VUP-specific financial-loan module was not selected as a general inclusion predictor or target because it is sparse and program-specific."
+    }
+  ],
+  "credit_feature_caveat": "Aggregated credit indicators are contemporaneous financial behaviors, not causes. They do not directly define the bank/Momo target but may act as adjacent financial-inclusion proxies; interpret model scores accordingly.",
+  "known_unresolved_source_issues": [
+    {
+      "source_file": "CS_S10C_Savings.dta",
+      "issue": "The validated structural report found one nonmissing hhid-pid pair that does not match the person roster.",
+      "handling": "The pipeline aggregates the target by hhid and does not use savings pid for linkage. The unmatched reference is neither repaired nor used to fabricate a person match; raw data remains untouched."
+    }
+  ],
+  "survey_weight_decision": "Preserve weight and pop_wt unchanged in the CSV. Do not pass them as estimator sample weights until the survey design and target population estimand are confirmed. Exclude them from predictors.",
+  "missingness_summary": {
+    "hhid": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "clust": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "province_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "district_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "urban_rural_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "dwelling_type_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "dwelling_owner_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "owns_residential_house": {
+      "missing_count": 11150,
+      "missing_fraction": 0.7406669323767769
+    },
+    "drinking_water_source_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "electricity_grid_connected": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "internet_at_home": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "toilet_type_code": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "any_livestock": {
+      "missing_count": 1,
+      "missing_fraction": 6.642752756742394e-05
+    },
+    "consumption_quintile": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "strata_id": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "weight": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "pop_wt": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "resident_member_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "mean_resident_age_years": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_female_residents": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_ever_attended_school": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_with_mobile_phone": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_using_internet": {
+      "missing_count": 553,
+      "missing_fraction": 0.03673442274478544
+    },
+    "share_residents_worked_own_farm": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_worked_nonfarm_wage": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_running_nonfarm_business": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "share_residents_age_15_64": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "access_service_item_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "access_service_use_often_share": {
+      "missing_count": 31,
+      "missing_fraction": 0.002059253354590142
+    },
+    "access_service_satisfied_share": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "access_service_improving_share": {
+      "missing_count": 301,
+      "missing_fraction": 0.019994685797794606
+    },
+    "access_median_travel_time_minutes": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "household_any_loan_attempt": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "household_any_member_owes_money": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "credit_id_missing_row_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "credit_source_row_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "q4_observation_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "q1_observation_count": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "hh_has_bank_or_momo_account": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "target_source_status": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    },
+    "target_s10cq4_conflict": {
+      "missing_count": 0,
+      "missing_fraction": 0.0
+    }
+  },
+  "data_quality": {
+    "method": "Missingness is counted per column. Invalid values use explicit feature bounds. Potential numeric outliers are flagged by the 1.5-IQR rule and are not removed or corrected.",
+    "duplicate_household_rows": 0,
+    "duplicate_household_id_groups": 0,
+    "invalid_record_counts": {
+      "resident_member_count": 0,
+      "mean_resident_age_years": 0,
+      "access_median_travel_time_minutes": 0,
+      "share_female_residents": 0,
+      "share_residents_age_15_64": 0,
+      "share_residents_ever_attended_school": 0,
+      "share_residents_with_mobile_phone": 0,
+      "share_residents_using_internet": 0,
+      "share_residents_worked_own_farm": 0,
+      "share_residents_worked_nonfarm_wage": 0,
+      "share_residents_running_nonfarm_business": 0,
+      "access_service_use_often_share": 0,
+      "access_service_satisfied_share": 0,
+      "access_service_improving_share": 0,
+      "hh_has_bank_or_momo_account": 0
+    },
+    "iqr_outlier_rows": {
+      "resident_member_count": 369,
+      "mean_resident_age_years": 1103,
+      "share_female_residents": 0,
+      "share_residents_age_15_64": 0,
+      "share_residents_ever_attended_school": 498,
+      "share_residents_with_mobile_phone": 0,
+      "share_residents_using_internet": 1366,
+      "share_residents_worked_own_farm": 0,
+      "share_residents_worked_nonfarm_wage": 842,
+      "share_residents_running_nonfarm_business": 1526,
+      "access_service_use_often_share": 0,
+      "access_service_satisfied_share": 199,
+      "access_service_improving_share": 0,
+      "access_median_travel_time_minutes": 272,
+      "household_any_loan_attempt": 824,
+      "household_any_member_owes_money": 0
+    },
+    "missingness": {
+      "province_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "district_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "urban_rural_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "dwelling_type_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "dwelling_owner_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "owns_residential_house": {
+        "missing_count": 11150,
+        "missing_fraction": 0.7406669323767769
+      },
+      "drinking_water_source_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "electricity_grid_connected": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "internet_at_home": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "toilet_type_code": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "any_livestock": {
+        "missing_count": 1,
+        "missing_fraction": 6.642752756742394e-05
+      },
+      "consumption_quintile": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "strata_id": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "weight": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "pop_wt": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "resident_member_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "mean_resident_age_years": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_female_residents": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_ever_attended_school": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_with_mobile_phone": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_using_internet": {
+        "missing_count": 553,
+        "missing_fraction": 0.03673442274478544
+      },
+      "share_residents_worked_own_farm": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_worked_nonfarm_wage": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_running_nonfarm_business": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "share_residents_age_15_64": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "access_service_item_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "access_service_use_often_share": {
+        "missing_count": 31,
+        "missing_fraction": 0.002059253354590142
+      },
+      "access_service_satisfied_share": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "access_service_improving_share": {
+        "missing_count": 301,
+        "missing_fraction": 0.019994685797794606
+      },
+      "access_median_travel_time_minutes": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "household_any_loan_attempt": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "household_any_member_owes_money": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "credit_id_missing_row_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "credit_source_row_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "q4_observation_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "q1_observation_count": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "hh_has_bank_or_momo_account": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "target_source_status": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      },
+      "target_s10cq4_conflict": {
+        "missing_count": 0,
+        "missing_fraction": 0.0
+      }
+    },
+    "records_changed_by_audit": 0
+  },
+  "source_audits": {
+    "household": {
+      "source_rows": 15054,
+      "source_households": 15054,
+      "rows_missing_hhid": 0
+    },
+    "person": {
+      "source_rows": 62110,
+      "rows_missing_hhid": 0,
+      "rows_missing_membership_code": 0,
+      "resident_rows_used": 62110,
+      "households_with_resident_records": 15054
+    },
+    "access": {
+      "source_rows": 225810,
+      "rows_missing_hhid": 0,
+      "households_with_access_records": 15054,
+      "rows_with_both_travel_time_components": 158689
+    },
+    "credit": {
+      "source_rows": 20509,
+      "rows_missing_hhid": 0,
+      "rows_missing_both_member_and_loan_id": 4739,
+      "households_with_credit_records": 15054
+    },
+    "savings": {
+      "source_rows": 43810,
+      "rows_missing_hhid": 0,
+      "households_with_savings_records": 15054,
+      "source_q4_observations": 43057,
+      "households_with_conflicting_q4_responses": 2347,
+      "unknown_nonmissing_s10cq4_codes": []
+    }
+  },
+  "household_coverage_checks": {
+    "household": {
+      "base_households_without_source_rows": 0,
+      "source_households_outside_base": 0
+    },
+    "person": {
+      "base_households_without_source_rows": 0,
+      "source_households_outside_base": 0
+    },
+    "access": {
+      "base_households_without_source_rows": 0,
+      "source_households_outside_base": 0
+    },
+    "credit": {
+      "base_households_without_source_rows": 0,
+      "source_households_outside_base": 0
+    },
+    "savings": {
+      "base_households_without_source_rows": 0,
+      "source_households_outside_base": 0
+    }
+  },
+  "raw_data_modified": false,
+  "finscope_merged": false,
+  "csv_output": "data/processed/financial_inclusion_household.csv",
+  "parquet_output": {
+    "written": true,
+    "path": "data/processed/financial_inclusion_household.parquet"
+  },
+  "baseline_status": "Not yet run.",
+  "baseline_model_evaluation": {
+    "status": "completed",
+    "target": "hh_has_bank_or_momo_account",
+    "eligible_labeled_households": 15054,
+    "unresolved_target_households_excluded_from_fit": 0,
+    "split": {
+      "method": "First fold of StratifiedGroupKFold (5 folds, shuffle=True, random_state=42).",
+      "group_variable": "clust",
+      "grouping_assumption": "clust is treated as a survey-cluster candidate; confirm its PSU role in survey documentation.",
+      "group_overlap": false,
+      "train_households": 12058,
+      "test_households": 2996,
+      "train_clusters": 1341,
+      "test_clusters": 333,
+      "train_class_counts": {
+        "0": 1378,
+        "1": 10680
+      }
+    },
+    "class_imbalance_handling": "class_weight='balanced' for logistic regression; balanced_subsample for random forest. Actual household class distribution is in the dataset target section.",
+    "survey_weights": "weight and pop_wt were preserved but not passed to model fitting; see the documented survey-weight decision.",
+    "threshold": 0.5,
+    "metrics": {
+      "majority_class_baseline": {
+        "precision_positive_class": 0.8851802403204272,
+        "recall_positive_class": 1.0,
+        "f1_positive_class": 0.9390934844192634,
+        "roc_auc": 0.5,
+        "pr_auc_average_precision": 0.8851802403204272,
+        "accuracy": 0.8851802403204272,
+        "confusion_matrix_labels_0_1": [
+          [
+            0,
+            344
+          ],
+          [
+            0,
+            2652
+          ]
+        ],
+        "test_households": 2996,
+        "test_class_counts": {
+          "0": 344,
+          "1": 2652
+        }
+      },
+      "logistic_regression": {
+        "precision_positive_class": 0.9710876548875631,
+        "recall_positive_class": 0.7978883861236803,
+        "f1_positive_class": 0.8760091078451666,
+        "roc_auc": 0.8819166754358273,
+        "pr_auc_average_precision": 0.9819028033796015,
+        "accuracy": 0.8000667556742324,
+        "confusion_matrix_labels_0_1": [
+          [
+            281,
+            63
+          ],
+          [
+            536,
+            2116
+          ]
+        ],
+        "test_households": 2996,
+        "test_class_counts": {
+          "0": 344,
+          "1": 2652
+        }
+      },
+      "random_forest": {
+        "precision_positive_class": 0.9517736149860502,
+        "recall_positive_class": 0.9004524886877828,
+        "f1_positive_class": 0.92540205386553,
+        "roc_auc": 0.8781251096145077,
+        "pr_auc_average_precision": 0.9802673860623923,
+        "accuracy": 0.8714953271028038,
+        "confusion_matrix_labels_0_1": [
+          [
+            223,
+            121
+          ],
+          [
+            264,
+            2388
+          ]
+        ],
+        "test_households": 2996,
+        "test_class_counts": {
+          "0": 344,
+          "1": 2652
+        }
+      }
+    },
+    "model_artifacts": {
+      "logistic_regression": "models/financial_inclusion_baseline/logistic_regression.joblib",
+      "random_forest": "models/financial_inclusion_baseline/random_forest.joblib"
+    },
+    "training_reference_profile": "models/financial_inclusion_baseline/training_reference_profile.json",
+    "interpretation_limit": "Predictive association only; cross-sectional survey data and this split do not establish causality."
+  },
+  "public_release": {
+    "unit_level_records_included": false,
+    "minimum_group_size": 50,
+    "synthetic_data": false
+  }
+}

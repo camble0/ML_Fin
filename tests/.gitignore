@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store
+
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Environment / secrets
+.env
+.env.*
+
+# Raw datasets — DO NOT upload
+data/raw/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Streamlit
+.streamlit/secrets.toml

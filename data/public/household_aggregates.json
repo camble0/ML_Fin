@@ -1,0 +1,315 @@
+{
+  "source": "EICV7 processed household survey",
+  "synthetic": false,
+  "minimum_group_size": 50,
+  "suppressed_groups": {
+    "province_code": 0,
+    "district_code": 0,
+    "urban_rural_code": 0,
+    "consumption_quintile": 0
+  },
+  "dimensions": {
+    "province_code": [
+      {
+        "province_code": 1,
+        "households": 1938,
+        "with_account": 1880,
+        "without_account": 58,
+        "account_access_share": 0.9700722394220846
+      },
+      {
+        "province_code": 2,
+        "households": 3885,
+        "with_account": 3320,
+        "without_account": 565,
+        "account_access_share": 0.8545688545688546
+      },
+      {
+        "province_code": 3,
+        "households": 3400,
+        "with_account": 3037,
+        "without_account": 363,
+        "account_access_share": 0.893235294117647
+      },
+      {
+        "province_code": 4,
+        "households": 2430,
+        "with_account": 2179,
+        "without_account": 251,
+        "account_access_share": 0.8967078189300411
+      },
+      {
+        "province_code": 5,
+        "households": 3401,
+        "with_account": 2916,
+        "without_account": 485,
+        "account_access_share": 0.8573948838576889
+      }
+    ],
+    "district_code": [
+      {
+        "district_code": 11.0,
+        "households": 647,
+        "with_account": 625,
+        "without_account": 22,
+        "account_access_share": 0.9659969088098919
+      },
+      {
+        "district_code": 12.0,
+        "households": 644,
+        "with_account": 623,
+        "without_account": 21,
+        "account_access_share": 0.967391304347826
+      },
+      {
+        "district_code": 13.0,
+        "households": 647,
+        "with_account": 632,
+        "without_account": 15,
+        "account_access_share": 0.9768160741885626
+      },
+      {
+        "district_code": 21.0,
+        "households": 486,
+        "with_account": 384,
+        "without_account": 102,
+        "account_access_share": 0.7901234567901234
+      },
+      {
+        "district_code": 22.0,
+        "households": 486,
+        "with_account": 406,
+        "without_account": 80,
+        "account_access_share": 0.8353909465020576
+      },
+      {
+        "district_code": 23.0,
+        "households": 486,
+        "with_account": 460,
+        "without_account": 26,
+        "account_access_share": 0.9465020576131687
+      },
+      {
+        "district_code": 24.0,
+        "households": 485,
+        "with_account": 402,
+        "without_account": 83,
+        "account_access_share": 0.8288659793814434
+      },
+      {
+        "district_code": 25.0,
+        "households": 486,
+        "with_account": 447,
+        "without_account": 39,
+        "account_access_share": 0.9197530864197531
+      },
+      {
+        "district_code": 26.0,
+        "households": 486,
+        "with_account": 415,
+        "without_account": 71,
+        "account_access_share": 0.8539094650205762
+      },
+      {
+        "district_code": 27.0,
+        "households": 486,
+        "with_account": 409,
+        "without_account": 77,
+        "account_access_share": 0.8415637860082305
+      },
+      {
+        "district_code": 28.0,
+        "households": 484,
+        "with_account": 397,
+        "without_account": 87,
+        "account_access_share": 0.8202479338842975
+      },
+      {
+        "district_code": 31.0,
+        "households": 486,
+        "with_account": 435,
+        "without_account": 51,
+        "account_access_share": 0.8950617283950617
+      },
+      {
+        "district_code": 32.0,
+        "households": 486,
+        "with_account": 423,
+        "without_account": 63,
+        "account_access_share": 0.8703703703703703
+      },
+      {
+        "district_code": 33.0,
+        "households": 485,
+        "with_account": 440,
+        "without_account": 45,
+        "account_access_share": 0.9072164948453608
+      },
+      {
+        "district_code": 34.0,
+        "households": 486,
+        "with_account": 436,
+        "without_account": 50,
+        "account_access_share": 0.897119341563786
+      },
+      {
+        "district_code": 35.0,
+        "households": 485,
+        "with_account": 398,
+        "without_account": 87,
+        "account_access_share": 0.8206185567010309
+      },
+      {
+        "district_code": 36.0,
+        "households": 486,
+        "with_account": 456,
+        "without_account": 30,
+        "account_access_share": 0.9382716049382716
+      },
+      {
+        "district_code": 37.0,
+        "households": 486,
+        "with_account": 449,
+        "without_account": 37,
+        "account_access_share": 0.9238683127572016
+      },
+      {
+        "district_code": 41.0,
+        "households": 486,
+        "with_account": 435,
+        "without_account": 51,
+        "account_access_share": 0.8950617283950617
+      },
+      {
+        "district_code": 42.0,
+        "households": 486,
+        "with_account": 423,
+        "without_account": 63,
+        "account_access_share": 0.8703703703703703
+      },
+      {
+        "district_code": 43.0,
+        "households": 486,
+        "with_account": 451,
+        "without_account": 35,
+        "account_access_share": 0.9279835390946503
+      },
+      {
+        "district_code": 44.0,
+        "households": 486,
+        "with_account": 431,
+        "without_account": 55,
+        "account_access_share": 0.8868312757201646
+      },
+      {
+        "district_code": 45.0,
+        "households": 486,
+        "with_account": 439,
+        "without_account": 47,
+        "account_access_share": 0.9032921810699589
+      },
+      {
+        "district_code": 51.0,
+        "households": 486,
+        "with_account": 419,
+        "without_account": 67,
+        "account_access_share": 0.8621399176954733
+      },
+      {
+        "district_code": 52.0,
+        "households": 486,
+        "with_account": 416,
+        "without_account": 70,
+        "account_access_share": 0.8559670781893004
+      },
+      {
+        "district_code": 53.0,
+        "households": 486,
+        "with_account": 424,
+        "without_account": 62,
+        "account_access_share": 0.8724279835390947
+      },
+      {
+        "district_code": 54.0,
+        "households": 485,
+        "with_account": 429,
+        "without_account": 56,
+        "account_access_share": 0.8845360824742268
+      },
+      {
+        "district_code": 55.0,
+        "households": 486,
+        "with_account": 419,
+        "without_account": 67,
+        "account_access_share": 0.8621399176954733
+      },
+      {
+        "district_code": 56.0,
+        "households": 486,
+        "with_account": 370,
+        "without_account": 116,
+        "account_access_share": 0.7613168724279835
+      },
+      {
+        "district_code": 57.0,
+        "households": 486,
+        "with_account": 439,
+        "without_account": 47,
+        "account_access_share": 0.9032921810699589
+      }
+    ],
+    "urban_rural_code": [
+      {
+        "urban_rural_code": 1,
+        "households": 3994,
+        "with_account": 3800,
+        "without_account": 194,
+        "account_access_share": 0.9514271407110666
+      },
+      {
+        "urban_rural_code": 2,
+        "households": 11060,
+        "with_account": 9532,
+        "without_account": 1528,
+        "account_access_share": 0.8618444846292947
+      }
+    ],
+    "consumption_quintile": [
+      {
+        "consumption_quintile": 1.0,
+        "households": 2541,
+        "with_account": 2061,
+        "without_account": 480,
+        "account_access_share": 0.8110979929161747
+      },
+      {
+        "consumption_quintile": 2.0,
+        "households": 2840,
+        "with_account": 2428,
+        "without_account": 412,
+        "account_access_share": 0.8549295774647887
+      },
+      {
+        "consumption_quintile": 3.0,
+        "households": 3104,
+        "with_account": 2728,
+        "without_account": 376,
+        "account_access_share": 0.8788659793814433
+      },
+      {
+        "consumption_quintile": 4.0,
+        "households": 3272,
+        "with_account": 2963,
+        "without_account": 309,
+        "account_access_share": 0.905562347188264
+      },
+      {
+        "consumption_quintile": 5.0,
+        "households": 3297,
+        "with_account": 3152,
+        "without_account": 145,
+        "account_access_share": 0.9560206248104337
+      }
+    ]
+  }
+}

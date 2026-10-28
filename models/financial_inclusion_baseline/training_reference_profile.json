@@ -1,0 +1,33 @@
+{
+  "method": "Training-fold median for numeric features and training-fold mode for categorical features.",
+  "values": {
+    "resident_member_count": 4.0,
+    "mean_resident_age_years": 23.666666666666668,
+    "share_female_residents": 0.5,
+    "share_residents_age_15_64": 0.6,
+    "share_residents_ever_attended_school": 0.9,
+    "share_residents_with_mobile_phone": 0.5,
+    "share_residents_using_internet": 0.0,
+    "share_residents_worked_own_farm": 0.3333333333333333,
+    "share_residents_worked_nonfarm_wage": 0.0,
+    "share_residents_running_nonfarm_business": 0.0,
+    "access_service_use_often_share": 0.0,
+    "access_service_satisfied_share": 0.875,
+    "access_service_improving_share": 0.0,
+    "access_median_travel_time_minutes": 30.0,
+    "household_any_loan_attempt": 0.0,
+    "household_any_member_owes_money": 1.0,
+    "province_code": 2,
+    "district_code": 11.0,
+    "urban_rural_code": 2,
+    "consumption_quintile": 5.0,
+    "dwelling_type_code": 1,
+    "dwelling_owner_code": 3,
+    "owns_residential_house": 2.0,
+    "drinking_water_source_code": 6,
+    "electricity_grid_connected": 1,
+    "internet_at_home": 2,
+    "toilet_type_code": 5,
+    "any_livestock": 1.0
+  }
+}
