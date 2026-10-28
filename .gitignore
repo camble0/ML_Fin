@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+.streamlit/secrets.toml
+data/raw/
+data/processed/financial_inclusion_household.csv
+data/processed/financial_inclusion_household.parquet
+reports/analytical_dataset_report.json
+reports/financial_inclusion_interpretation_demo.json
