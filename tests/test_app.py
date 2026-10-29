@@ -51,3 +51,12 @@ class StreamlitWorkflowTests(unittest.TestCase):
     self.assertAlmostEqual(sum(probability_values), 1.0)
     self.assertEqual(payload["household_id"], "Manual profile")
     self.assertNotEqual(payload["household_id"], "300162")
+
+  def test_district_options_follow_selected_province(self):
+    app = AppTest.from_file(str(APP_PATH), default_timeout=90).run()
+    app.get_by_key("platform_section").set_value("Predict").run()
+    app.get_by_key("predict_province_code").set_value(2).run()
+
+    district = app.get_by_key("predict_district_code")
+    self.assertFalse(app.exception)
+    self.assertIn(district.value, [21, 22, 23, 24, 25, 26, 27, 28])

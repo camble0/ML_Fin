@@ -299,7 +299,14 @@
           "storage_type": "int8",
           "stata_format": "%17.0g",
           "value_label_set": "province",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "City of Kigali",
+            "2": "Southern",
+            "3": "Western",
+            "4": "Northern",
+            "5": "Eastern"
+          }
         },
         {
           "name": "district",
@@ -307,7 +314,39 @@
           "storage_type": "float",
           "stata_format": "%10.0g",
           "value_label_set": "d",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "11": "Nyarugenge",
+            "12": "Gasabo",
+            "13": "Kicukiro",
+            "21": "Nyanza",
+            "22": "Gisagara",
+            "23": "Nyaruguru",
+            "24": "Huye",
+            "25": "Nyamagabe",
+            "26": "Ruhango",
+            "27": "Muhanga",
+            "28": "Kamonyi",
+            "31": "Karongi",
+            "32": "Rutsiro",
+            "33": "Rubavu",
+            "34": "Nyabihu",
+            "35": "Ngororero",
+            "36": "Rusizi",
+            "37": "Nyamasheke",
+            "41": "Rulindo",
+            "42": "Gakenke",
+            "43": "Musanze",
+            "44": "Burera",
+            "45": "Gicumbi",
+            "51": "Rwamagana",
+            "52": "Nyagatare",
+            "53": "Gatsibo",
+            "54": "Kayonza",
+            "55": "Kirehe",
+            "56": "Ngoma",
+            "57": "Bugesera"
+          }
         },
         {
           "name": "ur",
@@ -315,7 +354,13 @@
           "storage_type": "int8",
           "stata_format": "%10.0g",
           "value_label_set": "UR",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Urban",
+            "2": "Rural",
+            "3": "Peri urban",
+            "4": "Semi urban"
+          }
         },
         {
           "name": "s5aq1",
@@ -331,7 +376,16 @@
           "storage_type": "int8",
           "stata_format": "%62.0g",
           "value_label_set": "S5AQ2",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "House occupied by one household",
+            "2": "House occupied by multiple Households",
+            "3": "Multi-storied building occupied by one household",
+            "4": "Multi-storied building occupied by many households",
+            "5": "Several buildings in a compound occupied by one household",
+            "6": "Several buildings in a compound occupied by several households",
+            "7": "Other (Specify)"
+          }
         },
         {
           "name": "s5aq3",
@@ -379,7 +433,18 @@
           "storage_type": "int8",
           "stata_format": "%22.0g",
           "value_label_set": "S5AQ7",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Head",
+            "2": "Spouse",
+            "3": "Spouse with head",
+            "4": "Other household member",
+            "5": "Relative",
+            "6": "Non relative",
+            "7": "State",
+            "8": "Private company",
+            "9": "Other"
+          }
         },
         {
           "name": "s5aq8",
@@ -459,7 +524,11 @@
           "storage_type": "int8",
           "stata_format": "%8.0g",
           "value_label_set": "S5BQ6",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Yes",
+            "2": "No"
+          }
         },
         {
           "name": "s5bq7",
@@ -515,7 +584,24 @@
           "storage_type": "int8",
           "stata_format": "%31.0g",
           "value_label_set": "S5CQ3",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Piped into Dwelling",
+            "2": "Piped into compound, yard/pot",
+            "3": "Piped to neighbor HH3",
+            "4": "Public tap/standpipe",
+            "5": "Tube Well/Borehole",
+            "6": "Protected spring",
+            "7": "Unprotected spring",
+            "8": "Protected well",
+            "9": "Unprotected well",
+            "10": "Rain water",
+            "11": "Tanker Truck",
+            "12": "River/Stream/Irrigation Channel",
+            "13": "Lake/Pond/Surface water",
+            "14": "Bottled water",
+            "99": "Other specify)"
+          }
         },
         {
           "name": "s5cq4b",
@@ -619,7 +705,13 @@
           "storage_type": "int8",
           "stata_format": "%32.0g",
           "value_label_set": "S5CQ14",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Yes on grid",
+            "2": "Yes from solar",
+            "3": "Yes both on grid  and from solar",
+            "4": "No"
+          }
         },
         {
           "name": "s5cq15",
@@ -675,7 +767,11 @@
           "storage_type": "int8",
           "stata_format": "%8.0g",
           "value_label_set": "S5CQ20A",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Yes",
+            "2": "No"
+          }
         },
         {
           "name": "s5cq20b",
@@ -747,7 +843,18 @@
           "storage_type": "int8",
           "stata_format": "%42.0g",
           "value_label_set": "S5CQ25",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Flush to piped sewer system",
+            "2": "Flush to septic tank",
+            "3": "Flush to pit latrine",
+            "4": "Ventilated improved pit (VIP) latrine",
+            "5": "Pit Latrine with constructed floor slab",
+            "6": "Composting toilet",
+            "7": "Pit latrine without constructed floor slab",
+            "8": "Other (specify)",
+            "9": "No toilet /Bush/Field"
+          }
         },
         {
           "name": "s5cq26",
@@ -987,7 +1094,11 @@
           "storage_type": "int8",
           "stata_format": "%8.0g",
           "value_label_set": "S7AQ4",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Yes",
+            "2": "No"
+          }
         },
         {
           "name": "s7aq4a",
@@ -1115,7 +1226,14 @@
           "storage_type": "float",
           "stata_format": "%9.0g",
           "value_label_set": "quintile",
-          "missing_ranges": null
+          "missing_ranges": null,
+          "value_labels": {
+            "1": "Q1",
+            "2": "Q2",
+            "3": "Q3",
+            "4": "Q4",
+            "5": "Q5"
+          }
         },
         {
           "name": "s5cq4a",
@@ -6936,5 +7054,50 @@
         }
       ]
     }
-  ]
+  ],
+  "geographic_codes": {
+    "source_file": "CS_S01_S5_S7_Household.dta",
+    "province_district_codes": {
+      "1": [
+        11,
+        12,
+        13
+      ],
+      "2": [
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "3": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "4": [
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "5": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57
+      ]
+    }
+  }
 }

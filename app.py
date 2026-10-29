@@ -8,7 +8,10 @@ import pandas as pd
 import streamlit as st
 
 from src.ui.financial_inclusion_service import (
+    FEATURE_VALUE_LABEL_VARIABLES,
     PROJECT_ROOT,
+    category_value_key,
+    format_category_label,
     load_ui_resources,
     predict_household,
 )
@@ -21,34 +24,91 @@ REPORT_PATH = PROJECT_ROOT / "data" / "public" / "analytical_report.json"
 MODEL_NAMES = ("random_forest", "logistic_regression")
 
 FEATURE_LABELS = {
-    "resident_member_count": "Resident household members",
-    "mean_resident_age_years": "Mean age of residents (years)",
-    "share_female_residents": "Female residents (share, 0 to 1)",
-    "share_residents_age_15_64": "Residents aged 15-64 (share, 0 to 1)",
-    "share_residents_ever_attended_school": "Residents who ever attended school (share, 0 to 1)",
-    "share_residents_with_mobile_phone": "Residents with a mobile phone (share, 0 to 1)",
-    "share_residents_using_internet": "Residents who used the internet (share, 0 to 1)",
-    "share_residents_worked_own_farm": "Residents working on own farm (share, 0 to 1)",
-    "share_residents_worked_nonfarm_wage": "Residents in non-farm wage work (share, 0 to 1)",
-    "share_residents_running_nonfarm_business": "Residents running a non-farm business (share, 0 to 1)",
+    "resident_member_count": "People who live in this household",
+    "mean_resident_age_years": "Average age of household members (years)",
+    "share_female_residents": "Share of household members who are women",
+    "share_residents_age_15_64": "Share of members aged 15 to 64",
+    "share_residents_ever_attended_school": "Share who have ever attended school",
+    "share_residents_with_mobile_phone": "Share with a mobile phone",
+    "share_residents_using_internet": "Share who used the internet",
+    "share_residents_worked_own_farm": "Share who worked on their own farm",
+    "share_residents_worked_nonfarm_wage": "Share in non-farm wage work",
+    "share_residents_running_nonfarm_business": "Share running a non-farm business",
     "province_code": "Province",
     "district_code": "District",
     "urban_rural_code": "Residence area",
     "consumption_quintile": "Consumption quintile",
     "dwelling_type_code": "Dwelling type",
     "dwelling_owner_code": "Dwelling ownership",
-    "owns_residential_house": "Owns a residential house",
+    "owns_residential_house": "Does a household member own a residential house?",
     "drinking_water_source_code": "Main drinking-water source",
-    "electricity_grid_connected": "Connected to grid electricity",
-    "internet_at_home": "Internet available at home",
+    "electricity_grid_connected": "Household electricity connection",
+    "internet_at_home": "Does this household have an internet connection?",
     "toilet_type_code": "Household toilet type",
-    "any_livestock": "Household livestock ownership",
-    "access_service_use_often_share": "Basic services used often or regularly (share, 0 to 1)",
-    "access_service_satisfied_share": "Satisfaction with services (share, 0 to 1)",
-    "access_service_improving_share": "Services reported as improving (share, 0 to 1)",
-    "access_median_travel_time_minutes": "Median travel time to services (minutes)",
-    "household_any_loan_attempt": "Any member tried to obtain a loan",
-    "household_any_member_owes_money": "Any household member owes money",
+    "any_livestock": "Did any member own or raise livestock?",
+    "access_service_use_often_share": "Share of services used often or regularly",
+    "access_service_satisfied_share": "Share of services household members are satisfied with",
+    "access_service_improving_share": "Share of services reported as improving",
+    "access_median_travel_time_minutes": "Typical one-way travel time to services (minutes)",
+    "household_any_loan_attempt": "Has any member tried to obtain a loan?",
+    "household_any_member_owes_money": "Does any household member currently owe money?",
+}
+
+FORM_SECTIONS = (
+    ("Household composition", (
+        "resident_member_count",
+        "mean_resident_age_years",
+        "share_female_residents",
+        "share_residents_age_15_64",
+        "share_residents_ever_attended_school",
+    )),
+    ("Employment and economic activity", (
+        "consumption_quintile",
+        "share_residents_worked_own_farm",
+        "share_residents_worked_nonfarm_wage",
+        "share_residents_running_nonfarm_business",
+    )),
+    ("Housing and basic services", (
+        "dwelling_type_code",
+        "dwelling_owner_code",
+        "owns_residential_house",
+        "drinking_water_source_code",
+        "electricity_grid_connected",
+        "internet_at_home",
+        "toilet_type_code",
+        "any_livestock",
+        "share_residents_with_mobile_phone",
+        "share_residents_using_internet",
+        "access_service_use_often_share",
+        "access_service_satisfied_share",
+        "access_service_improving_share",
+        "access_median_travel_time_minutes",
+    )),
+    ("Financial access and borrowing", (
+        "household_any_loan_attempt",
+        "household_any_member_owes_money",
+    )),
+)
+
+FEATURE_HELP = {
+    "share_female_residents": "A proportion from 0 to 1, calculated from household members with a recorded sex response.",
+    "share_residents_age_15_64": "A proportion from 0 to 1 among household members whose age is recorded.",
+    "share_residents_ever_attended_school": "A proportion from 0 to 1 among household members with a recorded Yes/No answer.",
+    "share_residents_with_mobile_phone": "A proportion from 0 to 1 among household members with a recorded Yes/No answer.",
+    "share_residents_using_internet": "A proportion from 0 to 1 among household members with a recorded Yes/No answer.",
+    "consumption_quintile": "A quintile divides households ranked by consumption into five equal-sized groups. Q1 is the lowest-consumption group and Q5 the highest.",
+    "dwelling_owner_code": "Choose the survey-recorded owner category for the dwelling itself.",
+    "owns_residential_house": "This asks whether any household member owns a residential house in this village or elsewhere; it is separate from ownership of the dwelling occupied here.",
+    "drinking_water_source_code": "Select the main source household members use for drinking water.",
+    "electricity_grid_connected": "The survey distinguishes grid electricity, solar electricity, both, and neither.",
+    "toilet_type_code": "Select the toilet type used by the household. VIP means ventilated improved pit latrine.",
+    "any_livestock": "Includes owning and/or raising livestock, as asked in the EICV7 questionnaire.",
+    "access_service_use_often_share": "Share of recorded services used often or regularly, rather than not at all or sometimes.",
+    "access_service_satisfied_share": "Share of recorded services for which household members reported being satisfied.",
+    "access_service_improving_share": "Share of recorded services reported as improving.",
+    "access_median_travel_time_minutes": "Median one-way travel time to services, converted to minutes; not a distance measure.",
+    "household_any_loan_attempt": "Yes if any valid household response said a member tried to obtain a loan.",
+    "household_any_member_owes_money": "Yes if any valid household response said a member owes money.",
 }
 
 SOURCE_VARIABLES = {
@@ -119,7 +179,7 @@ def display_code(value, field: str, report: dict) -> str:
         code_labels = json.loads(structure_path.read_text(encoding="utf-8")).get("code_labels", {})
         if key in code_labels.get(source, {}):
             return code_labels[source][key]
-    return f"Code {key}"
+    return f"Unverified {FEATURE_LABELS.get(field, field.replace('_', ' '))} category ({key})"
 
 
 def account_access_summary(frame: pd.DataFrame, group: str) -> pd.DataFrame:
@@ -236,66 +296,160 @@ def render_prediction(report: dict) -> None:
 
     st.caption("The model inputs below mirror the saved preprocessing schema. Defaults are the training-fold median (numeric) or mode (categorical), not a representative household.")
     defaults = resources["reference_values"]
-    labels = resources["value_labels"]
-    priority = resources["priority_labels"]
-    inputs = {}
+    options_by_feature = resources["category_options"]
+    geography = resources["geographic_code_pairs"]
+    province_options = options_by_feature["province_code"]
+    province_key = "predict_province_code"
+    previous_province = st.session_state.get(province_key, defaults["province_code"])
+    if previous_province not in province_options:
+        previous_province = province_options[0]
+    with st.container(border=True):
+        st.subheader("Geographic information")
+        province_column, district_column, residence_column = st.columns(3)
+        with province_column:
+            province_code = st.selectbox(
+                FEATURE_LABELS["province_code"],
+                province_options,
+                index=province_options.index(previous_province),
+                format_func=lambda value: format_category_label("province_code", value, resources),
+                key=province_key,
+                help="Choose the province or city recorded in the EICV7 survey.",
+            )
+        district_options = [
+            district
+            for district in options_by_feature["district_code"]
+            if int(float(district)) in geography.get(category_value_key(province_code), [])
+        ]
+        district_key = "predict_district_code"
+        previous_district = st.session_state.get(district_key, defaults["district_code"])
+        if previous_district not in district_options:
+            previous_district = district_options[0]
+        with district_column:
+            district_code = st.selectbox(
+                FEATURE_LABELS["district_code"],
+                district_options,
+                index=district_options.index(previous_district),
+                format_func=lambda value: format_category_label("district_code", value, resources),
+                key=district_key,
+                help="District choices are limited to those recorded under the selected province or city.",
+            )
+        residence_options = options_by_feature["urban_rural_code"]
+        residence_key = "predict_urban_rural_code"
+        previous_residence = st.session_state.get(
+            residence_key, defaults["urban_rural_code"]
+        )
+        if previous_residence not in residence_options:
+            previous_residence = residence_options[0]
+        with residence_column:
+            urban_rural_code = st.selectbox(
+                FEATURE_LABELS["urban_rural_code"],
+                residence_options,
+                index=residence_options.index(previous_residence),
+                format_func=lambda value: format_category_label(
+                    "urban_rural_code", value, resources
+                ),
+                key=residence_key,
+                help="Choose the survey-recorded residence area.",
+            )
+
+    inputs = {
+        "province_code": province_code,
+        "district_code": district_code,
+        "urban_rural_code": urban_rural_code,
+    }
     with st.form("prediction_form", border=True):
-        numeric_columns = st.columns(3)
-        categorical_columns = st.columns(3)
-        for index, feature in enumerate(resources["features"]):
-            label = FEATURE_LABELS.get(feature, feature.replace("_", " ").capitalize())
-            key = f"predict_{feature}"
-            default = st.session_state.get(key, defaults.get(feature))
-            if feature in resources["categorical_features"]:
-                options = resources["category_options"][feature]
-                if default not in options:
-                    default = options[0]
-                source = SOURCE_VARIABLES.get(feature)
-                def format_category(value, source_variable=source):
-                    code = str(int(value)) if float(value).is_integer() else str(value)
-                    return priority.get(source_variable, {}).get(code) or labels.get(source_variable, {}).get(code) or f"Code {code}"
-                with categorical_columns[index % len(categorical_columns)]:
-                    widget_options = {"key": key, "help": "Select a category observed by the saved model's fitted encoder."}
-                    if key not in st.session_state:
-                        widget_options["index"] = options.index(default)
-                    inputs[feature] = st.selectbox(label, options, format_func=format_category, **widget_options)
-            elif feature.startswith("share_") or feature.endswith("_share"):
-                numeric_value = float(default) if pd.notna(default) else 0.0
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Proportion of eligible household responses; enter from 0% to 100%.", "min_value": 0.0, "max_value": 1.0, "step": 0.01}
-                    if key not in st.session_state:
-                        widget_options["value"] = min(1.0, max(0.0, numeric_value))
-                    inputs[feature] = st.slider(label, **widget_options)
-            elif feature in {"household_any_loan_attempt", "household_any_member_owes_money"}:
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Binary household-level indicator."}
-                    if key not in st.session_state:
-                        widget_options["index"] = int(float(default) >= 0.5)
-                    inputs[feature] = st.selectbox(label, [0, 1], format_func=lambda value: "Yes" if value else "No", **widget_options)
-            elif feature == "resident_member_count":
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Number of resident members (whole persons).", "min_value": 1, "max_value": 40, "step": 1}
-                    if key not in st.session_state:
-                        widget_options["value"] = min(40, max(1, int(round(float(default) if pd.notna(default) else 1))))
-                    inputs[feature] = st.number_input(label, **widget_options)
-            elif feature == "mean_resident_age_years":
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Average age of resident household members, in years.", "min_value": 0.0, "max_value": 120.0, "step": 1.0}
-                    if key not in st.session_state:
-                        widget_options["value"] = min(120.0, max(0.0, float(default) if pd.notna(default) else 0.0))
-                    inputs[feature] = st.number_input(label, **widget_options)
-            elif feature == "access_median_travel_time_minutes":
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Median one-way travel time to services, in minutes (maximum 24 hours).", "min_value": 0.0, "max_value": 1440.0, "step": 5.0}
-                    if key not in st.session_state:
-                        widget_options["value"] = min(1440.0, max(0.0, float(default) if pd.notna(default) else 0.0))
-                    inputs[feature] = st.number_input(label, **widget_options)
-            else:
-                with numeric_columns[index % len(numeric_columns)]:
-                    widget_options = {"key": key, "help": "Non-negative value in the units used by the EICV7-derived feature.", "min_value": 0.0, "step": 1.0}
-                    if key not in st.session_state:
-                        widget_options["value"] = max(0.0, float(default) if pd.notna(default) else 0.0)
-                    inputs[feature] = st.number_input(label, **widget_options)
+        for section_name, section_features in FORM_SECTIONS:
+            st.subheader(section_name)
+            columns = st.columns(2)
+            for index, feature in enumerate(section_features):
+                if feature not in resources["features"]:
+                    continue
+                label = FEATURE_LABELS.get(feature, feature.replace("_", " ").capitalize())
+                key = f"predict_{feature}"
+                default = st.session_state.get(key, defaults.get(feature))
+                help_text = FEATURE_HELP.get(
+                    feature,
+                    "Use the household value represented in the EICV7-derived model feature.",
+                )
+                with columns[index % len(columns)]:
+                    if feature in resources["categorical_features"]:
+                        options = options_by_feature[feature]
+                        if default not in options:
+                            default = options[0]
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "format_func": lambda value, current_feature=feature: format_category_label(
+                                current_feature, value, resources
+                            ),
+                        }
+                        if key not in st.session_state:
+                            widget_options["index"] = options.index(default)
+                        inputs[feature] = st.selectbox(label, options, **widget_options)
+                    elif feature.startswith("share_") or feature.endswith("_share"):
+                        numeric_value = float(default) if pd.notna(default) else 0.0
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "min_value": 0.0,
+                            "max_value": 1.0,
+                            "step": 0.01,
+                        }
+                        if key not in st.session_state:
+                            widget_options["value"] = min(1.0, max(0.0, numeric_value))
+                        inputs[feature] = st.slider(label, **widget_options)
+                    elif feature in {"household_any_loan_attempt", "household_any_member_owes_money"}:
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "format_func": lambda value: "Yes" if value else "No",
+                        }
+                        if key not in st.session_state:
+                            widget_options["index"] = int(float(default) >= 0.5)
+                        inputs[feature] = st.selectbox(label, [0, 1], **widget_options)
+                    elif feature == "resident_member_count":
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "min_value": 1,
+                            "max_value": 40,
+                            "step": 1,
+                        }
+                        if key not in st.session_state:
+                            widget_options["value"] = min(40, max(1, int(round(float(default) if pd.notna(default) else 1))))
+                        inputs[feature] = st.number_input(label, **widget_options)
+                    elif feature == "mean_resident_age_years":
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "min_value": 0.0,
+                            "max_value": 120.0,
+                            "step": 1.0,
+                        }
+                        if key not in st.session_state:
+                            widget_options["value"] = min(120.0, max(0.0, float(default) if pd.notna(default) else 0.0))
+                        inputs[feature] = st.number_input(label, **widget_options)
+                    elif feature == "access_median_travel_time_minutes":
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "min_value": 0.0,
+                            "max_value": 1440.0,
+                            "step": 5.0,
+                        }
+                        if key not in st.session_state:
+                            widget_options["value"] = min(1440.0, max(0.0, float(default) if pd.notna(default) else 0.0))
+                        inputs[feature] = st.number_input(label, **widget_options)
+                    else:
+                        widget_options = {
+                            "key": key,
+                            "help": help_text,
+                            "min_value": 0.0,
+                            "step": 1.0,
+                        }
+                        if key not in st.session_state:
+                            widget_options["value"] = max(0.0, float(default) if pd.notna(default) else 0.0)
+                        inputs[feature] = st.number_input(label, **widget_options)
         submitted = st.form_submit_button("Estimate account-access pattern", type="primary", help="Validate all model features and produce one model-based estimate.")
 
     if submitted:
@@ -318,6 +472,7 @@ def render_prediction(report: dict) -> None:
     prediction = payload["prediction"]
     probabilities = prediction["probabilities"]
     st.subheader("Model estimate")
+    st.info("This is a model prediction of reported bank or Mobile Money account access, not a verified fact about a household and not a poverty or financial-vulnerability classification.")
     st.write(f"Predicted pattern: **{prediction['predicted_label']}**")
     with st.container(horizontal=True):
         st.metric("Estimated probability of account access", f"{probabilities['has_bank_or_momo_account']:.1%}", border=True)

@@ -144,7 +144,33 @@ def value_key(value) -> str:
 
 
 def load_value_label_maps() -> dict[str, dict[str, str]]:
-    return {}
+    inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
+    household_file = next(
+        (
+            file_entry
+            for file_entry in inventory.get("files", [])
+            if file_entry.get("filename") == "CS_S01_S5_S7_Household.dta"
+        ),
+        None,
+    )
+    if household_file is None:
+        raise ValueError("Household Stata label metadata is missing from the inventory.")
+    return {
+        variable["name"]: variable["value_labels"]
+        for variable in household_file.get("variables", [])
+        if variable.get("value_labels")
+    }
+
+
+def load_geographic_code_pairs() -> dict[str, list[int]]:
+    inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
+    geographic_codes = inventory.get("geographic_codes", {})
+    if geographic_codes.get("source_file") != "CS_S01_S5_S7_Household.dta":
+        raise ValueError("Verified EICV7 province-district pairs are missing from the inventory.")
+    pairs = geographic_codes.get("province_district_codes", {})
+    if not pairs:
+        raise ValueError("Verified EICV7 province-district pairs are empty.")
+    return {str(province): [int(district) for district in districts] for province, districts in pairs.items()}
 
 
 def load_variable_descriptions() -> dict[tuple[str, str], str]:
@@ -205,9 +231,9 @@ def describe_profile_value(
         return {"value": None, "display": "Not reported", "unit": unit}
     if unit == "category":
         label = (
-            priority_value_labels.get(source_variable or "", {}).get(value_key(value))
-            or stata_value_labels.get(source_variable or "", {}).get(value_key(value))
-            or f"Code {value_key(value)}"
+            stata_value_labels.get(source_variable or "", {}).get(value_key(value))
+            or priority_value_labels.get(source_variable or "", {}).get(value_key(value))
+            or f"Unverified category for {feature} ({value_key(value)})"
         )
         return {"value": value, "display": label, "unit": unit}
     if unit == "fraction":

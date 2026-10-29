@@ -6,6 +6,20 @@ import pyreadstat
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data" / "raw" / "EICV7"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "eicv7_metadata_inventory.json"
+HOUSEHOLD_LABEL_VARIABLES = {
+    "province",
+    "district",
+    "ur",
+    "quintile",
+    "s5aq2",
+    "s5aq7",
+    "s5bq6",
+    "s5cq3",
+    "s5cq14",
+    "s5cq20a",
+    "s5cq25",
+    "s7aq4",
+}
 
 
 def inspect_file(file_path: Path) -> dict:
@@ -24,20 +38,30 @@ def inspect_file(file_path: Path) -> dict:
     storage_types = metadata.readstat_variable_types or {}
     stata_formats = metadata.original_variable_types or {}
     value_label_sets = metadata.variable_to_label or {}
+    value_labels = metadata.value_labels or {}
     missing_ranges = metadata.missing_ranges or {}
 
     variables = []
     for index, name in enumerate(variable_names):
-        variables.append(
-            {
-                "name": name,
-                "label": variable_labels[index] if index < len(variable_labels) else None,
-                "storage_type": storage_types.get(name),
-                "stata_format": stata_formats.get(name),
-                "value_label_set": value_label_sets.get(name),
-                "missing_ranges": missing_ranges.get(name),
+        label_set = value_label_sets.get(name)
+        labels = value_labels.get(label_set, {})
+        variable = {
+            "name": name,
+            "label": variable_labels[index] if index < len(variable_labels) else None,
+            "storage_type": storage_types.get(name),
+            "stata_format": stata_formats.get(name),
+            "value_label_set": label_set,
+            "missing_ranges": missing_ranges.get(name),
+        }
+        if (
+            file_path.name == "CS_S01_S5_S7_Household.dta"
+            and name in HOUSEHOLD_LABEL_VARIABLES
+            and labels
+        ):
+            variable["value_labels"] = {
+                str(value): label for value, label in labels.items()
             }
-        )
+        variables.append(variable)
 
     return {
         "filename": file_path.name,
@@ -48,6 +72,33 @@ def inspect_file(file_path: Path) -> dict:
         "metadata_decoding": metadata_decoding,
         "notes": metadata.notes,
         "variables": variables,
+    }
+
+
+def inspect_geographic_codes(file_path: Path) -> dict:
+    try:
+        frame, _ = pyreadstat.read_dta(
+            str(file_path),
+            usecols=["province", "district"],
+            apply_value_formats=False,
+        )
+    except UnicodeDecodeError:
+        frame, _ = pyreadstat.read_dta(
+            str(file_path),
+            usecols=["province", "district"],
+            apply_value_formats=False,
+            encoding="latin1",
+        )
+
+    pairs_by_province = {}
+    for province, district in frame.dropna().itertuples(index=False, name=None):
+        pairs_by_province.setdefault(str(int(province)), set()).add(int(district))
+    return {
+        "source_file": file_path.name,
+        "province_district_codes": {
+            province: sorted(districts)
+            for province, districts in sorted(pairs_by_province.items())
+        },
     }
 
 
@@ -75,6 +126,10 @@ def main() -> None:
                 }
             )
             print(f"ERROR {file_path.name}: {type(error).__name__}: {error}")
+
+    household_file = DATA_DIR / "CS_S01_S5_S7_Household.dta"
+    if household_file.is_file():
+        inventory["geographic_codes"] = inspect_geographic_codes(household_file)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(

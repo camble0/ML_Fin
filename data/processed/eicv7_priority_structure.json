@@ -57,11 +57,11 @@
     },
     "code_labels": {
         "province": {
-            "1": "Kigali City",
-            "2": "Southern Province",
-            "3": "Western Province",
-            "4": "Northern Province",
-            "5": "Eastern Province"
+            "1": "City of Kigali",
+            "2": "Southern",
+            "3": "Western",
+            "4": "Northern",
+            "5": "Eastern"
         },
         "district": {
             "11": "Nyarugenge",
@@ -97,14 +97,16 @@
         },
         "ur": {
             "1": "Urban",
-            "2": "Rural"
+            "2": "Rural",
+            "3": "Peri urban",
+            "4": "Semi urban"
         },
         "quintile": {
-            "1": "Poor",
-            "2": "Poor/mid",
-            "3": "Mid",
-            "4": "Mid/upper",
-            "5": "Upper"
+            "1": "Q1",
+            "2": "Q2",
+            "3": "Q3",
+            "4": "Q4",
+            "5": "Q5"
         },
         "pov_jan": {
             "0": "Non Poor",
